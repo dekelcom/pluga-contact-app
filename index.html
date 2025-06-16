@@ -1,0 +1,731 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>רשימת קשר - פריסה רחבה</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 3vw;
+            font-size: 1.1em;
+            background-color: #f9f9f9;
+        }
+        .pluga-box {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 3vw;
+            margin-bottom: 6vw;
+            background-color: #fff;
+        }
+        .pluga-header {
+            background-color: #e8e8e8;
+            font-weight: bold;
+            font-size: 1.3em;
+            padding: 10px;
+            border-right: 5px solid #aaa;
+            margin-bottom: 15px;
+        }
+        .hafak-card {
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+        .hafak-header {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: auto;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: right;
+            font-size: 1em;
+        }
+        button {
+            font-size: 1em;
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 5px;
+        }
+    </style>
+    <script>
+        function filterPluga(deptId) {
+            const sections = document.querySelectorAll('.pluga-section');
+            sections.forEach(sec => {
+                if (deptId === 'all' || sec.dataset.pluga === deptId) {
+                    sec.style.display = 'block';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+</script>
+</head>
+
+<body>
+    <h1>רשימת קשר לפי פלוגה וחפ״ק</h1>
+    <div style="margin-bottom:20px;"><button onclick="filterPluga('א__-_פוקימון')" style="margin:5px; padding:10px;">א' - פוקימון</button><button onclick="filterPluga('ב__-_פרידה')" style="margin:5px; padding:10px;">ב' - פרידה</button><button onclick="filterPluga('ג__-_כתם')" style="margin:5px; padding:10px;">ג' - כתם</button><button onclick="filterPluga('חפ_ק_מג_ד')" style="margin:5px; padding:10px;">חפ"ק מג"ד</button><button onclick="filterPluga('רפואה')" style="margin:5px; padding:10px;">רפואה</button><button onclick="filterPluga('all')" style="margin:5px; padding:10px;">הצג הכל</button></div>
+    
+        <div class="pluga-section" data-pluga="א__-_פוקימון">
+            <div class="pluga-box">
+                <div class="pluga-header">פלוגה א&#x27; - פוקימון</div>
+                
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק א1</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עודד-חי אבקסיס</td>
+      <td>מפקד</td>
+      <td><a href="tel:+972522997663" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972522997663" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>יהודה אלבוים</td>
+      <td>קשר</td>
+      <td><a href="tel:+972544751018" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972544751018" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>קובי כהן</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972547228558" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972547228558" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>דניאל סוויד</td>
+      <td>חובש</td>
+      <td><a href="tel:+972503304008" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972503304008" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עינב אנגלנד</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972544845022" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972544845022" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק א2</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>נועם ביטון</td>
+      <td>מפקדת</td>
+      <td><a href="tel:+972532360650" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972532360650" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אגם פרידמן</td>
+      <td>קשר</td>
+      <td><a href="tel:+972556677509" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972556677509" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>איימן סעד</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972503440880" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972503440880" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>שלו וינדר</td>
+      <td>חובש</td>
+      <td><a href="tel:+972526699248" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972526699248" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מיטל מיטלמן</td>
+      <td>מהנדסת</td>
+      <td><a href="tel:+972509361516" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972509361516" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק א3</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עומר לנגה</td>
+      <td>מפקד</td>
+      <td><a href="tel:+972545754814" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972545754814" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עמית אברון</td>
+      <td>קשר</td>
+      <td><a href="tel:+972522371498" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972522371498" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אלון שטרן</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972549490649" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549490649" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>טירן דהן</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972543078502" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972543078502" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>ולדיסלב כספיר</td>
+      <td>חובש</td>
+      <td><a href="tel:+972547482270" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972547482270" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק מ&quot;פ א</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עמית צייטלר</td>
+      <td>מ"פ</td>
+      <td><a href="tel:+972542241684" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972542241684" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אלירן שומרון</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972535202092" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972535202092" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עומר קארפו</td>
+      <td>קשר</td>
+      <td><a href="tel:+972524812007" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972524812007" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עמנואל ראמוס</td>
+      <td>אוכלוסייה</td>
+      <td><a href="tel:+972549279081" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549279081" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>נרקיס משה</td>
+      <td>קשר</td>
+      <td><a href="tel:+972528575783" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972528575783" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>סידני יפרגן</td>
+      <td>נהגת</td>
+      <td><a href="tel:+972525115608" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972525115608" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק סמ&quot;פ</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>גבי אוסטר</td>
+      <td>סמ"פ</td>
+      <td><a href="tel:+972547156904" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972547156904" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>פביאן סנדובל</td>
+      <td>קשר</td>
+      <td><a href="tel:+972586770138" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972586770138" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>לי בורכיאן</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972522531755" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972522531755" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>הילה בוקס</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972525709483" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972525709483" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>סידני יפרגן</td>
+      <td>נהגת</td>
+      <td><a href="tel:+972525115608" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972525115608" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            </div>
+        </div>
+    
+        <div class="pluga-section" data-pluga="ב__-_פרידה">
+            <div class="pluga-box">
+                <div class="pluga-header">פלוגה ב&#x27; - פרידה</div>
+                
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ב1</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>אבי אטיאס</td>
+      <td>מפקד</td>
+      <td><a href="tel:+972545330728" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972545330728" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מאור אזואל</td>
+      <td>קשר</td>
+      <td><a href="tel:+972543159931" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972543159931" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>שחר בן חמו</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972504343303" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972504343303" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>ליאם פלג</td>
+      <td>חובש</td>
+      <td><a href="tel:+972547916125" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972547916125" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>שמוליק בכר</td>
+      <td>נהג</td>
+      <td><a href="tel:+972506558541" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972506558541" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ב2</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>לנה אמירוב</td>
+      <td>מפקדת</td>
+      <td><a href="tel:+972538073188" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972538073188" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מיכל גרינבלום</td>
+      <td>קשר</td>
+      <td><a href="tel:+972587715887" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972587715887" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>גיא  כהן</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972523994485" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972523994485" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>חן שוסטרמן</td>
+      <td>חובש</td>
+      <td><a href="tel:+972587654456" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972587654456" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אליאור לוי</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972528742079" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972528742079" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ב3</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ארבל אבנית</td>
+      <td>מפקד</td>
+      <td><a href="tel:+972532382379" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972532382379" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>יצחק אילוז</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972523345644" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972523345644" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>סיוון קרפט</td>
+      <td>קשר</td>
+      <td><a href="tel:+972506723666" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972506723666" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עופר בן אמיאל</td>
+      <td>חובש</td>
+      <td><a href="tel:+972543368945" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972543368945" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עמית גרוס</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972526399988" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972526399988" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק מ&quot;פ ב</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עלי גדיר</td>
+      <td>מ"פ</td>
+      <td><a href="tel:+972545372903" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972545372903" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אליזבטה בויקו</td>
+      <td>קשר</td>
+      <td><a href="tel:+972534712340" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972534712340" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>סהר אברמוביץ'</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972507551100" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972507551100" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>שי בוסליק</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972522620114" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972522620114" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            </div>
+        </div>
+    
+        <div class="pluga-section" data-pluga="ג__-_כתם">
+            <div class="pluga-box">
+                <div class="pluga-header">פלוגה ג&#x27; - כתם</div>
+                
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ג1</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ולד מוסלימוב</td>
+      <td>מפקד/אוכלוסיה</td>
+      <td><a href="tel:+972546779680" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972546779680" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>איגור רבודה</td>
+      <td>קשר</td>
+      <td><a href="tel:+972545963330" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972545963330" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>פבל קירייב</td>
+      <td>לוחם מחלץ</td>
+      <td><a href="tel:+972547314004" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972547314004" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אביעד גליל</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972549988039" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549988039" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מוריה גבאי</td>
+      <td>חובש</td>
+      <td><a href="tel:+972556699485" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972556699485" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ג2</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>שמואל סבאון</td>
+      <td>מ.מ + מהנדס</td>
+      <td><a href="tel:+972586276303" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972586276303" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>יובל ברוכין</td>
+      <td>קשר</td>
+      <td><a href="tel:+972509672436" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972509672436" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>שחר עזרא</td>
+      <td>חובשת</td>
+      <td><a href="tel:+972586007667" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972586007667" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עופרי שחר</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972508887054" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972508887054" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק ג3</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>תומר מרדכי</td>
+      <td>מפקד</td>
+      <td><a href="tel:+972509357798" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972509357798" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>דני מרעי</td>
+      <td>קשר</td>
+      <td><a href="tel:+972525982353" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972525982353" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מאור חליבה</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972527981065" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972527981065" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>דנה כהן</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972546739510" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972546739510" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>ניר שמש</td>
+      <td>חובש</td>
+      <td><a href="tel:+972529593941" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972529593941" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק מ&quot;פ ג</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>בוריס לייזרונוק</td>
+      <td>מ"פ</td>
+      <td><a href="tel:+972546325452" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972546325452" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>אלכסה ברנשטיין</td>
+      <td>קשר</td>
+      <td><a href="tel:+972549821877" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549821877" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מתנאל הלל</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972549576000" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549576000" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>מאור שקורי</td>
+      <td>אוכלוסיה</td>
+      <td><a href="tel:+972549460546" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972549460546" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            </div>
+        </div>
+    
+        <div class="pluga-section" data-pluga="חפ_ק_מג_ד">
+            <div class="pluga-box">
+                <div class="pluga-header">פלוגה חפ&quot;ק מג&quot;ד</div>
+                
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק מג&quot;ד</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עמית גרנון</td>
+      <td>nan</td>
+      <td><a href="tel:+972548308961" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972548308961" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>סשה ישראל</td>
+      <td>קשר</td>
+      <td><a href="tel:+972544608518" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972544608518" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>חיים תורג'מן</td>
+      <td>נהג</td>
+      <td><a href="tel:+972542322768" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972542322768" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>יונתן  ריימונד</td>
+      <td>מהנדס</td>
+      <td><a href="tel:+972535299096" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972535299096" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+    <tr>
+      <td>עמית פסחוב</td>
+      <td>חובש</td>
+      <td><a href="tel:+972533308338" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972533308338" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            </div>
+        </div>
+    
+        <div class="pluga-section" data-pluga="רפואה">
+            <div class="pluga-box">
+                <div class="pluga-header">פלוגה רפואה</div>
+                
+            <div class="hafak-card">
+                <div class="hafak-header">חפ&quot;ק מ&quot;פ רפואה</div>
+                <div class="table-wrapper">
+                    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>שם</th>
+      <th>תפקיד</th>
+      <th>תקשורת</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>עמית פסחוב</td>
+      <td>מ"מ</td>
+      <td><a href="tel:+972533308338" style="text-decoration:none;" title="התקשר">📞</a> <a href="https://wa.me/972533308338" target="_blank" style="text-decoration:none;" title="WhatsApp">🟢</a></td>
+    </tr>
+  </tbody>
+</table>
+                </div>
+            </div>
+        
+            </div>
+        </div>
+    
+</body>
+</html>
