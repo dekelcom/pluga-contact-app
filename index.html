@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשימת קשר - מעודכן עם מג&quot;ד קרסול</title>
+    <title>רשימת קשר - עם הורדת אנשי קשר</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -94,6 +94,13 @@ function filterText() {
 <div style="margin: 15px 0;">
     <input type="text" id="searchInput" oninput="filterText()" placeholder="🔍 חפש שם, תפקיד או חפ"ק..." 
     style="width: 100%; padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 5px;">
+</div>
+
+    
+<div style="margin: 25px 0; text-align: center;">
+    <a href="Pluga_822_Contacts.vcf" download style="font-size: 1.2em; text-decoration: none; background: #4CAF50; color: white; padding: 12px 20px; border-radius: 6px;">
+        📇 הורד את אנשי הקשר (vCard)
+    </a>
 </div>
 
     <div style="margin-bottom:20px;"><button onclick="filterPluga('חפ_ק_מג_ד')" style="margin:5px; padding:10px;">חפ"ק מג"ד</button><button onclick="filterPluga('א__-_פוקימון')" style="margin:5px; padding:10px;">א' - פוקימון</button><button onclick="filterPluga('ב__-_פרידה')" style="margin:5px; padding:10px;">ב' - פרידה</button><button onclick="filterPluga('ג__-_כתם')" style="margin:5px; padding:10px;">ג' - כתם</button><button onclick="filterPluga('רפואה')" style="margin:5px; padding:10px;">רפואה</button><button onclick="filterPluga('all')" style="margin:5px; padding:10px;">הצג הכל</button></div>
