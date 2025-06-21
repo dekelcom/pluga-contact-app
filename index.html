@@ -2,152 +2,105 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>רשימת קשר דינמית - פלוגה 882</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      direction: rtl;
-      background: #f7f7f7;
-    }
-    h1 {
-      text-align: center;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .controls input, .controls select {
-      font-size: 1em;
-      padding: 8px;
-    }
-    .download {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .download a {
-      font-size: 1em;
-      text-decoration: none;
-      background-color: #25D366;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-    }
-    .download img {
-      width: 24px;
-      height: 24px;
-      margin-left: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: right;
-    }
-    th {
-      background-color: #e8e8e8;
-    }
-    .icons a {
-      margin-left: 8px;
-    }
-    .icons img {
-      width: 22px;
-      height: 22px;
-      vertical-align: middle;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>רשימת קשר - פלוגה 882 (מתעדכן אוטומטית)</title>
+    <style>
+        body { font-family: sans-serif; background: #f6f6f6; padding: 2rem; direction: rtl; }
+        h1 { color: #111; }
+        select, input { padding: 0.5rem; margin-left: 1rem; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 0.75rem; text-align: center; }
+        th { background: #eee; }
+        .icon { width: 24px; vertical-align: middle; margin: 0 4px; cursor: pointer; }
+        #download { background: #25d366; color: white; padding: 0.6rem 1.5rem; border: none; border-radius: 6px; font-size: 1rem; }
+    </style>
 </head>
 <body>
-  <h1>📇 רשימת קשר - פלוגה 882 (מתעדכן אוטומטית)</h1>
-
-  <div class="download">
-    <a href="Pluga_882_Contacts.vcf" download>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="vCard">
-      הורד את אנשי הקשר לנייד
-    </a>
-  </div>
-
-  <div class="controls">
-    <input type="text" id="searchBox" placeholder="חפש לפי שם / תפקיד / חפ"ק" oninput="filterTable()" />
-    <select id="plugaFilter" onchange="filterTable()">
-      <option value="">כל הפלוגות</option>
+    <h1>📇 רשימת קשר - פלוגה 882 (מתעדכן אוטומטית)</h1>
+    <button id="download">📥 הורד את אנשי הקשר לנייד</button><br><br>
+    <label>סנן לפי פלוגה:</label>
+    <select id="plugaFilter">
+        <option value="all">כל הפלוגות</option>
     </select>
-  </div>
+    <input type="text" id="searchBox" placeholder="🔍 חפש לפי שם / תפקיד / חפ"ק" />
 
-  <div id="contactTable">טוען נתונים...</div>
+    <div id="tableContainer">טוען נתונים...</div>
 
-  <script>
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI7N3JlGecMYFLcqSFNxeGkJ0nquw693LMNtacsZeYdvbOduL9-468is55ohl-ZQACFSfq6zwlaSHX/pub?gid=1952443889&single=true&output=csv";
-    let fullData = [];
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script>
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSI7N3JlGecMYFLcqSFNxeGkJ0nquw693LMNtacsZeYdvbOduL9-468is55ohl-ZQACFSfq6zwlaSHX/pub?gid=1952443889&single=true&output=csv";
+        const tableContainer = document.getElementById("tableContainer");
+        const plugaFilter = document.getElementById("plugaFilter");
+        const searchBox = document.getElementById("searchBox");
+        const downloadButton = document.getElementById("download");
 
-    function filterTable() {
-      const search = document.getElementById('searchBox').value.trim().toLowerCase();
-      const selectedPluga = document.getElementById('plugaFilter').value;
-      const filtered = fullData.filter(row => {
-        const name = (row['שם פרטי'] + ' ' + row['שם משפחה']).toLowerCase();
-        const role = (row['תפקיד'] || '').toLowerCase();
-        const hafak = (row['חפ"ק'] || '').toLowerCase();
-        const pluga = row['פלוגה'];
-        return (!selectedPluga || pluga === selectedPluga) &&
-               (name.includes(search) || role.includes(search) || hafak.includes(search));
-      });
-      buildTable(filtered);
-    }
+        let allData = [];
 
-    function buildTable(data) {
-      let html = '<table><thead><tr><th>שם</th><th>תפקיד</th><th>חפ"ק</th><th>פלוגה</th><th>תקשורת</th></tr></thead><tbody>';
-      data.forEach(row => {
-        if (!row['שם פרטי'] || !row['שם משפחה']) return;
-        const name = row['שם פרטי'] + ' ' + row['שם משפחה'];
-        const role = row['תפקיד'] || '';
-        const hafak = row['חפ"ק'] || '';
-        const pluga = row['פלוגה'] || '';
-        const phone = row['טלפון'] ? row['טלפון'].replace(/[^0-9]/g, '') : '';
-        const intlPhone = phone.startsWith('0') ? '972' + phone.substring(1) : phone;
-
-        const callIcon = phone ? `<a href="tel:${phone}"><img src="https://img.icons8.com/ios-filled/50/000000/phone.png" alt="Phone"/></a>` : '';
-        const waIcon = intlPhone ? `<a href="https://wa.me/${intlPhone}" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"/></a>` : '';
-
-        html += `<tr>
-          <td>${name}</td>
-          <td>${role}</td>
-          <td>${hafak}</td>
-          <td>${pluga}</td>
-          <td class="icons">${callIcon} ${waIcon}</td>
-        </tr>`;
-      });
-      html += '</tbody></table>';
-      document.getElementById('contactTable').innerHTML = html;
-    }
-
-    Papa.parse(csvUrl, {
-      download: true,
-      header: true,
-      complete: function(results) {
-        fullData = results.data.filter(r => r['שם פרטי'] && r['שם משפחה']);
-        const uniquePlugot = [...new Set(fullData.map(r => r['פלוגה']).filter(Boolean))];
-        const select = document.getElementById('plugaFilter');
-        uniquePlugot.forEach(p => {
-          const opt = document.createElement('option');
-          opt.value = p;
-          opt.textContent = p;
-          select.appendChild(opt);
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            encoding: "UTF-8",
+            complete: function(results) {
+                allData = results.data.filter(row => row["שם"]); // filter out empty rows
+                renderTable(allData);
+                populateFilters(allData);
+            }
         });
-        buildTable(fullData);
-      }
-    });
-  </script>
+
+        function renderTable(data) {
+            const filteredPluga = plugaFilter.value;
+            const searchTerm = searchBox.value.trim();
+
+            let html = '<table><thead><tr><th>שם</th><th>תפקיד</th><th>חפ"ק</th><th>פלוגה</th><th>תקשורת</th></tr></thead><tbody>';
+
+            const grouped = {};
+            data.forEach(row => {
+                if (filteredPluga !== "all" && row["פלוגה"] !== filteredPluga) return;
+                if (searchTerm && !Object.values(row).join(" ").includes(searchTerm)) return;
+
+                const key = `${row["פלוגה"]} - ${row["חפ"ק"]}`;
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(row);
+            });
+
+            for (const key of Object.keys(grouped).sort()) {
+                html += `<tr><td colspan="5" style="background:#ddd; text-align:right;"><b>${key}</b></td></tr>`;
+                for (const row of grouped[key]) {
+                    const name = row["שם"] || "";
+                    const role = row["תפקיד"] || "";
+                    const phone = row["טלפון"]?.split(',')[0].trim() || "";
+                    const waIcon = phone ? `<a href="https://wa.me/972${phone.slice(1)}" target="_blank"><img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" /></a>` : "";
+                    const phoneIcon = phone ? `<a href="tel:${phone}"><img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Phone_font_awesome.svg" alt="Call" /></a>` : "";
+                    html += `<tr>
+                        <td>${name}</td>
+                        <td>${role}</td>
+                        <td>${row["חפ"ק"] || ""}</td>
+                        <td>${row["פלוגה"] || ""}</td>
+                        <td>${waIcon}${phoneIcon}</td>
+                    </tr>`;
+                }
+            }
+
+            html += '</tbody></table>';
+            tableContainer.innerHTML = html;
+        }
+
+        function populateFilters(data) {
+            const plugot = new Set(data.map(row => row["פלוגה"]));
+            [...plugot].sort().forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p;
+                opt.innerText = p;
+                plugaFilter.appendChild(opt);
+            });
+        }
+
+        plugaFilter.addEventListener("change", () => renderTable(allData));
+        searchBox.addEventListener("input", () => renderTable(allData));
+
+        downloadButton.addEventListener("click", () => {
+            window.location.href = "contacts/pluga_882.vcf";
+        });
+    </script>
 </body>
 </html>
