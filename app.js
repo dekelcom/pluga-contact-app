@@ -211,3 +211,5 @@ frameworkFilter.onchange = searchBox.oninput = () => {
     `;
   }
 })();
+});
+
