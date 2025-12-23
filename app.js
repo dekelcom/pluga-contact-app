@@ -125,32 +125,26 @@ function render() {
     const tel = clean(r.mobileE164);
     const wa = clean(r.mobileWA);
 
-    html += `
-      <tr>
-        <td>${clean(r.firstName)}</td>
-        <td>${clean(r.lastName)}</td>
-        <td>${clean(r.pluga)}</td>
-        <td>${clean(r.framework)}</td>
-        <td>${clean(r.role)}</td>
-        <td>${clean(r.mobile)}</td>
-        <td>
-          <div class="actions">
-            <a href="tel:${tel}" title="חיוג" ${
-      tel ? "" : "onclick='return false;'"
-    }>📞</a>
-            <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
-               class="wa-link" title="WhatsApp" ${
-                 wa ? "" : "onclick='return false;'"
-               }>
-              <img src="${BASE_PATH}/assets/icons/whatsapp.png"
-                   class="wa-icon" alt="WhatsApp">
-            </a>
-            <a href="#" class="vcard" title="שמור איש קשר">👤</a>
-          </div>
-        </td>
-      </tr>
-    `;
-  });
+	html += `
+	  <tr>
+		<td data-label="שם פרטי">${clean(r.firstName)}</td>
+		<td data-label="שם משפחה">${clean(r.lastName)}</td>
+		<td data-label="פלוגה">${clean(r.pluga)}</td>
+		<td data-label="מסגרת">${clean(r.framework)}</td>
+		<td data-label="תפקיד">${clean(r.role)}</td>
+		<td data-label="טלפון">${clean(r.mobile)}</td>
+		<td data-label="פעולות">
+		  <div class="actions">
+			<a href="tel:${tel}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
+			<a href="https://wa.me/${wa}" target="_blank" rel="noopener"
+			   class="wa-link" title="WhatsApp" ${wa ? "" : "onclick='return false;'"}">
+			  <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
+			</a>
+			<a href="#" class="vcard" title="שמור איש קשר">👤</a>
+		  </div>
+		</td>
+	  </tr>
+	`;
 
   html += "</tbody></table>";
   tableWrap.innerHTML = html;
