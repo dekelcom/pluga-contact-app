@@ -187,7 +187,6 @@ frameworkFilter.onchange = searchBox.oninput = () => {
       mobileWA: clean(x.mobileWA),
     }));
 
-    // Plugot list
     uniqSorted(allData.map((x) => x.pluga)).forEach((p) => {
       const o = document.createElement("option");
       o.value = p;
@@ -195,7 +194,6 @@ frameworkFilter.onchange = searchBox.oninput = () => {
       plugaFilter.appendChild(o);
     });
 
-    statusEl.textContent = `מציג ${allData.length} מתוך ${allData.length}`;
     applyFilter();
     applySort();
     render();
@@ -211,5 +209,3 @@ frameworkFilter.onchange = searchBox.oninput = () => {
     `;
   }
 })();
-});
-
