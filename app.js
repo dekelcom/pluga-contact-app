@@ -1,5 +1,4 @@
 const DATA_URL = "./data.json";
-const BASE_PATH = "/pluga-contact-app";
 
 const statusEl = document.getElementById("status");
 const tableWrap = document.getElementById("tableWrap");
@@ -15,13 +14,31 @@ let sortKey = "lastName";
 let sortDir = "asc";
 
 const clean = (s) =>
-  String(s ?? "").replace(/[\u200E\u200F\u202A-\u202E]/g, "").trim();
+  String(s ?? "")
+    .replace(/[\u200E\u200F\u202A-\u202E]/g, "")
+    .trim();
+
 const cleanLower = (s) => clean(s).toLowerCase();
 
 function uniqSorted(arr) {
   return [...new Set(arr.filter(Boolean))].sort((a, b) =>
     cleanLower(a).localeCompare(cleanLower(b), "he")
   );
+}
+
+function compare(a, b) {
+  const av = cleanLower(a[sortKey]);
+  const bv = cleanLower(b[sortKey]);
+  if (av === bv) return 0;
+  return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
+}
+
+function applySort() {
+  filtered.sort((a, b) => {
+    const p = compare(a, b);
+    if (p !== 0) return p;
+    return cleanLower(a.firstName).localeCompare(cleanLower(b.firstName), "he");
+  });
 }
 
 function applyFilter() {
@@ -53,129 +70,71 @@ function applyFilter() {
   statusEl.textContent = `מציג ${filtered.length} מתוך ${allData.length}`;
 }
 
-function applySort() {
-  filtered.sort((a, b) => {
-    const av = cleanLower(a[sortKey]);
-    const bv = cleanLower(b[sortKey]);
-    if (av === bv) return 0;
-    return av < bv ? (sortDir === "asc" ? -1 : 1) : sortDir === "asc" ? 1 : -1;
-  });
-}
-
-function buildVCard(r) {
-  const first = clean(r.firstName);
-  const last = clean(r.lastName);
-  const fn = `${first} ${last}`.trim() || "איש קשר";
-  const tel = clean(r.mobileE164);
-
-  const lines = [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `N;CHARSET=UTF-8:${last};${first};;;`,
-    `FN;CHARSET=UTF-8:${fn}`,
-  ];
-
-  if (tel) lines.push(`TEL;TYPE=CELL:${tel}`);
-
-  lines.push("END:VCARD");
-  return lines.join("\n"); // downloadText כבר יהפוך ל-CRLF
-}
-
-
-function downloadText(text, filename) {
-  // iOS אוהב BOM + CRLF
-  const withBom = "\uFEFF" + text.replace(/\n/g, "\r\n");
-  const blob = new Blob([withBom], { type: "text/vcard;charset=utf-8" });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function safeName(s) {
-  return clean(s)
-    .replace(/[\\/:*?"<>|]/g, "-")
-    .replace(/\s+/g, "_")
-    .slice(0, 100);
-}
-
-function render() {
-  if (!filtered.length) {
-    tableWrap.innerHTML =
-      "<div style='padding:16px;color:#666;'>אין תוצאות</div>";
+function buildVCard(rec) {
+  const first = clean(rec.firstName);
+  const last = clean(rec.lastName);
+    tableWrap.innerHTML = `<div style="padding:16px;color:#666;">אין תוצאות</div>`;
     return;
   }
 
   let html = `
-  <table>
-    <thead>
-      <tr>
-        <th data-key="firstName">שם פרטי</th>
-        <th data-key="lastName">שם משפחה</th>
-        <th data-key="pluga">פלוגה</th>
-        <th data-key="framework">מסגרת</th>
-        <th data-key="role">תפקיד</th>
-        <th data-key="mobile">טלפון</th>
-        <th>פעולות</th>
-      </tr>
-    </thead>
-    <tbody>
+    <table>
+      <thead>
+        <tr>
+          <th data-key="firstName">שם פרטי</th>
+          <th data-key="lastName">שם משפחה</th>
+          <th data-key="pluga">פלוגה</th>
+          <th data-key="framework">מסגרת</th>
+          <th data-key="role">תפקיד</th>
+          <th data-key="mobile">טלפון</th>
+          <th class="noSort">פעולות</th>
+        </tr>
+      </thead>
+      <tbody>
   `;
 
-  filtered.forEach((r, i) => {
+  for (const r of filtered) {
     const tel = clean(r.mobileE164);
     const wa = clean(r.mobileWA);
 
-html += `
-  <tr>
-    <td data-label="שם פרטי">${clean(r.firstName)}</td>
-    <td data-label="שם משפחה">${clean(r.lastName)}</td>
-    <td data-label="פלוגה">${clean(r.pluga)}</td>
-    <td data-label="מסגרת">${clean(r.framework)}</td>
-    <td data-label="תפקיד">${clean(r.role)}</td>
-    <td data-label="טלפון">${clean(r.mobile)}</td>
-    <td data-label="פעולות">
-      <div class="actions">
-        <a href="tel:${tel}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
-        <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
-           class="wa-link" title="WhatsApp" ${wa ? "" : "onclick='return false;'"}">
-          <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
-        </a>
-        <a href="#" class="vcard" title="שמור איש קשר">👤</a>
-      </div>
-    </td>
-  </tr>
-`;
+    html += `
+      <tr>
+        <td>${clean(r.firstName)}</td>
+        <td>${clean(r.lastName)}</td>
+        <td>${clean(r.pluga)}</td>
+        <td>${clean(r.framework)}</td>
+        <td>${clean(r.role)}</td>
+        <td>${clean(r.mobile)}</td>
+        <td>
+          <div class="actions">
+            <a href="tel:${tel}" ${tel ? "" : "onclick='return false;'"} title="חיוג">📞</a>
+            <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
+               class="wa-link" ${wa ? "" : "onclick='return false;'"} title="WhatsApp">
+              <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon">
+            </a>
+            <a href="#" class="vcard" title="שמור איש קשר">👤</a>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
 
   html += "</tbody></table>";
   tableWrap.innerHTML = html;
 
   document.querySelectorAll(".vcard").forEach((el, i) => {
-    el.onclick = (e) => {
+    el.addEventListener("click", (e) => {
       e.preventDefault();
       const vcf = buildVCard(filtered[i]);
-      downloadText(
-        vcf,
-        `${safeName(filtered[i].firstName)}_${safeName(
-          filtered[i].lastName
-        )}.vcf`
-      );
-    };
+      downloadText(vcf, `${safeName(filtered[i].firstName)}_${safeName(filtered[i].lastName)}.vcf`);
+    });
   });
 
   document.querySelectorAll("th[data-key]").forEach((th) => {
     th.onclick = () => {
-      if (sortKey === th.dataset.key)
-        sortDir = sortDir === "asc" ? "desc" : "asc";
-      else {
-        sortKey = th.dataset.key;
-        sortDir = "asc";
-      }
+      sortKey === th.dataset.key
+        ? (sortDir = sortDir === "asc" ? "desc" : "asc")
+        : ((sortKey = th.dataset.key), (sortDir = "asc"));
       applySort();
       render();
     };
@@ -184,19 +143,13 @@ html += `
 
 downloadBtn.onclick = () => {
   const vcf = filtered.map(buildVCard).join("\n");
-  downloadText(
-    vcf,
-    `Pluga_${safeName(plugaFilter.value)}_${safeName(
-      frameworkFilter.value
-    )}.vcf`
-  );
+  downloadText(vcf, `Pluga_${safeName(plugaFilter.value)}_${safeName(frameworkFilter.value)}.vcf`);
 };
 
 plugaFilter.onchange = () => {
   frameworkFilter.innerHTML = `<option value="all">כל המסגרות</option>`;
   uniqSorted(
-    allData.filter((x) => clean(x.pluga) === clean(plugaFilter.value))
-      .map((x) => x.framework)
+    allData.filter((x) => clean(x.pluga) === clean(plugaFilter.value)).map((x) => x.framework)
   ).forEach((f) => {
     const o = document.createElement("option");
     o.value = f;
