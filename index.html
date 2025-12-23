@@ -1,322 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>רשימת קשר - פלוגה 882 (מתעדכן אוטומטית)</title>
-
-  <style>
-    body { font-family: sans-serif; background: #f6f6f6; padding: 2rem; direction: rtl; }
-    h1 { color: #111; margin: 0 0 1rem; }
-    .row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    select, input { padding: 0.5rem; }
-    table { width: 100%; border-collapse: collapse; background: white; margin-top: 1rem; }
-    th, td { border: 1px solid #ccc; padding: 0.75rem; text-align: center; }
-    th { background: #eee; }
-    .icon { width: 22px; vertical-align: middle; margin: 0 6px; cursor: pointer; }
-    #download {
-      background: #25d366; color: white; padding: 0.6rem 1.5rem;
-      border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;
-      display:inline-flex; align-items:center; gap:8px;
-    }
-    #download:disabled { opacity: 0.5; cursor: not-allowed; }
-    .hint { color:#444; margin-top: 0.75rem; }
-    .muted { color:#777; font-size: 0.95rem; }
-    .badge { background:#111; color:#fff; padding:2px 8px; border-radius:999px; font-size:12px; }
-  </style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
-
 <body>
-  <div class="row" style="justify-content:space-between;">
-    <h1>רשימת קשר - פלוגה 882 <span class="muted">(מתעדכן אוטומטית)</span></h1>
-    <div style="font-size:22px;">🗂️</div>
-  </div>
+  <header class="top">
+    <div class="headerRow">
+      <h1>רשימת קשר - פלוגה 882 <span class="muted">(מתעדכן אוטומטית)</span></h1>
+      <div class="icon">🗂️</div>
+    </div>
 
-  <div class="row" style="margin-top:12px;">
-    <button id="download" disabled>📥 הורד את אנשי הקשר לנייד</button>
-  </div>
+    <button id="downloadBtn" class="cta" disabled>📥 הורד את אנשי הקשר לנייד</button>
 
-  <div class="row" style="margin-top:12px;">
-    <input id="searchBox" type="search" placeholder="חפש לפי שם / תפקיד / טלפון..." />
-    <label class="row" style="gap:8px;">
-      <span>סנן לפי פלוגה:</span>
-      <select id="plugaFilter">
-        <option value="all">כל הפלוגות</option>
-      </select>
-    </label>
+    <div class="filters">
+      <input id="searchBox" type="search" placeholder="חפש לפי שם / תפקיד / טלפון..." autocomplete="off" />
 
-    <label class="row" style="gap:8px;">
-      <span>סנן לפי מסגרת:</span>
-      <select id="frameworkFilter" disabled>
-        <option value="all">בחר פלוגה קודם</option>
-      </select>
-    </label>
+      <label>
+        סנן לפי פלוגה:
+        <select id="plugaFilter">
+          <option value="all">כל הפלוגות</option>
+        </select>
+      </label>
 
-    <span id="count" class="badge">טוען נתונים...</span>
-  </div>
+      <label>
+        סנן לפי מסגרת:
+        <select id="frameworkFilter" disabled>
+          <option value="all">בחר פלוגה קודם</option>
+        </select>
+      </label>
 
-  <div id="tableContainer" class="hint">טוען נתונים...</div>
+      <span id="status" class="badge">טוען נתונים...</span>
+    </div>
+  </header>
 
-  <script>
-    const DATA_URL = "./data.json";
+  <main class="wrap">
+    <div id="tableWrap" class="tableWrap"></div>
+  </main>
 
-    const tableContainer = document.getElementById("tableContainer");
-    const plugaFilter = document.getElementById("plugaFilter");
-    const frameworkFilter = document.getElementById("frameworkFilter");
-    const searchBox = document.getElementById("searchBox");
-    const downloadButton = document.getElementById("download");
-    const countBadge = document.getElementById("count");
-
-    let allData = [];
-    let filteredData = [];
-
-    const norm = (s) => String(s ?? "")
-      .replace(/[\u200E\u200F\u202A-\u202E]/g, "")  // RTL/LTR marks
-      .trim();
-
-    const normLower = (s) => norm(s).toLowerCase();
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function uniqueSorted(arr){
-      return [...new Set(arr.filter(Boolean))].sort((a,b)=>normLower(a).localeCompare(normLower(b), "he"));
-    }
-
-    function populatePlugaOptions(data){
-      const plugot = uniqueSorted(data.map(x => norm(x.pluga)));
-      // נקה אופציות חוץ מ"כל הפלוגות"
-      plugaFilter.innerHTML = '<option value="all">כל הפלוגות</option>';
-      for (const p of plugot){
-        const opt = document.createElement("option");
-        opt.value = p;
-        opt.textContent = p;
-        plugaFilter.appendChild(opt);
-      }
-    }
-
-    function populateFrameworkOptionsForPluga(plugaValue){
-      const p = norm(plugaValue);
-      if (!p || p === "all"){
-        frameworkFilter.disabled = true;
-        frameworkFilter.innerHTML = '<option value="all">בחר פלוגה קודם</option>';
-        return;
-      }
-
-      const frameworks = uniqueSorted(
-        allData.filter(x => norm(x.pluga) === p).map(x => norm(x.framework))
-      );
-
-      frameworkFilter.disabled = false;
-      frameworkFilter.innerHTML = '<option value="all">כל המסגרות</option>';
-      for (const f of frameworks){
-        const opt = document.createElement("option");
-        opt.value = f;
-        opt.textContent = f;
-        frameworkFilter.appendChild(opt);
-      }
-    }
-
-    function applyFilters(){
-      const p = norm(plugaFilter.value);
-      const f = norm(frameworkFilter.value);
-      const q = normLower(searchBox.value);
-
-      filteredData = allData.filter(x => {
-        if (p !== "all" && norm(x.pluga) !== p) return false;
-        if (f !== "all" && norm(x.framework) !== f) return false;
-
-        if (q){
-          const hay = [
-            x.firstName, x.lastName, x.role, x.pluga, x.framework, x.mobile, x.mobileE164, x.mobileWA
-          ].map(normLower).join(" ");
-          if (!hay.includes(q)) return false;
-        }
-
-        return true;
-      });
-
-      // הכפתור פעיל רק אם נבחרה מסגרת ספציפית (לא all)
-      const canDownload = (p !== "all" && f !== "all" && filteredData.length > 0);
-      downloadButton.disabled = !canDownload;
-
-      countBadge.textContent = `מציג ${filteredData.length} מתוך ${allData.length}`;
-    }
-
-    function renderTable(){
-      if (!filteredData.length){
-        tableContainer.innerHTML = "<div class='hint'>אין תוצאות לתצוגה.</div>";
-        return;
-      }
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>שם</th>
-              <th>תפקיד</th>
-              <th>מסגרת</th>
-              <th>פלוגה</th>
-              <th>תקשורת</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      for (const row of filteredData){
-        const first = norm(row.firstName);
-        const last = norm(row.lastName);
-        const name = (first + " " + last).trim();
-
-        const role = norm(row.role);
-        const pluga = norm(row.pluga);
-        const framework = norm(row.framework);
-
-        const tel = norm(row.mobileE164);
-        const wa = norm(row.mobileWA);
-
-        const telHref = tel ? `tel:${tel}` : "#";
-        const waHref = wa ? `https://wa.me/${wa}` : "#";
-
-        html += `
-          <tr>
-            <td>${escapeHtml(name)}</td>
-            <td>${escapeHtml(role)}</td>
-            <td>${escapeHtml(framework)}</td>
-            <td>${escapeHtml(pluga)}</td>
-            <td>
-              <a href="${telHref}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
-              <a href="${waHref}" target="_blank" rel="noopener" title="WhatsApp" ${wa ? "" : "onclick='return false;'"}>💬</a>
-              <span class="icon" title="שמור איש קשר" data-vcard='${encodeURIComponent(buildVCard(row))}'>👤</span>
-            </td>
-          </tr>
-        `;
-      }
-
-      html += "</tbody></table>";
-      tableContainer.innerHTML = html;
-
-      // bind single vcard
-      document.querySelectorAll("[data-vcard]").forEach(el => {
-        el.addEventListener("click", () => {
-          const vcf = decodeURIComponent(el.getAttribute("data-vcard"));
-          downloadTextFile(vcf, "contact.vcf", "text/vcard;charset=utf-8");
-        });
-      });
-    }
-
-    function buildVCard(row){
-      const first = norm(row.firstName);
-      const last = norm(row.lastName);
-      const fn = (first + " " + last).trim() || "איש קשר";
-      const tel = norm(row.mobileE164);
-
-      const meta = [];
-      if (row.pluga) meta.push(`פלוגה: ${norm(row.pluga)}`);
-      if (row.framework) meta.push(`מסגרת: ${norm(row.framework)}`);
-      if (row.role) meta.push(`תפקיד: ${norm(row.role)}`);
-
-      const lines = [
-        "BEGIN:VCARD",
-        "VERSION:4.0",
-        `N:${last};${first};;;`,
-        `FN:${fn}`,
-      ];
-
-      if (tel) lines.push(`TEL;TYPE=cell:${tel}`);
-      if (meta.length) lines.push(`NOTE:${meta.join(" | ")}`);
-
-      lines.push("END:VCARD");
-      return lines.join("\n");
-    }
-
-    function downloadTextFile(text, filename, mime){
-      const blob = new Blob([text], { type: mime });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function safeFilename(s){
-      return norm(s).replace(/[\\/:*?"<>|]/g, "-").replace(/\s+/g, "_").slice(0, 120) || "contacts";
-    }
-
-    function downloadFilteredVcf(){
-      const p = norm(plugaFilter.value);
-      const f = norm(frameworkFilter.value);
-
-      // קובץ אחד מרוכז - vCard לכל איש קשר
-      const vcf = filteredData.map(buildVCard).join("\n");
-      const filename = `Pluga_882__${safeFilename(p)}__${safeFilename(f)}.vcf`;
-      downloadTextFile(vcf, filename, "text/vcard;charset=utf-8");
-    }
-
-    async function init(){
-      try{
-        const res = await fetch(DATA_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error("data.json not found / failed to load");
-        const data = await res.json();
-
-        // normalize once
-        allData = (data || []).map(x => ({
-          firstName: norm(x.firstName),
-          lastName: norm(x.lastName),
-          pluga: norm(x.pluga),
-          framework: norm(x.framework),
-          role: norm(x.role),
-          mobile: norm(x.mobile),
-          mobileE164: norm(x.mobileE164),
-          mobileWA: norm(x.mobileWA),
-        })).filter(x => x.firstName || x.lastName || x.mobile);
-
-        populatePlugaOptions(allData);
-        populateFrameworkOptionsForPluga("all");
-
-        applyFilters();
-        renderTable();
-
-        tableContainer.style.display = "block";
-      } catch(e){
-        console.error(e);
-        countBadge.textContent = "שגיאה";
-        tableContainer.innerHTML =
-          "<div class='hint'>שגיאה בטעינת הנתונים. ודא ש-data.json נמצא ב-root של הריפו וש-GitHub Pages עובד.</div>";
-      }
-    }
-
-    plugaFilter.addEventListener("change", () => {
-      populateFrameworkOptionsForPluga(plugaFilter.value);
-      frameworkFilter.value = "all";
-      applyFilters();
-      renderTable();
-    });
-
-    frameworkFilter.addEventListener("change", () => {
-      applyFilters();
-      renderTable();
-    });
-
-    searchBox.addEventListener("input", () => {
-      applyFilters();
-      renderTable();
-    });
-
-    downloadButton.addEventListener("click", () => {
-      downloadFilteredVcf();
-    });
-
-    init();
-  </script>
+  <script src="./app.js"></script>
 </body>
 </html>
