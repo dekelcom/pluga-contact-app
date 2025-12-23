@@ -1,3 +1,28 @@
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions a {
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.wa-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.wa-icon {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+}
+
+.wa-link:hover .wa-icon {
+  transform: scale(1.1);
+}
 :root {
   --bg: #f5f6f8;
   --card: #ffffff;
@@ -124,7 +149,8 @@ label {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 920px;
+  table-layout: auto;
+  min-width: 0; /* חשוב - לא לנעול 920 */
 }
 
 th,
@@ -184,21 +210,69 @@ tr:hover td {
 /* ===== Empty / Error states ===== */
 .tableWrap > div {
   padding: 16px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-/* ===== Responsive ===== */
+  co
 @media (max-width: 768px) {
-  h1 {
-    font-size: 26px;
+  .filters {
+    gap: 10px;
   }
 
   #searchBox {
     min-width: 100%;
   }
 
-  table {
-    min-width: 700px;
+  /* הופכים טבלה לכרטיסים */
+  table, thead, tbody, th, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  tr {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: normal;      /* טקסט ארוך ישבר שורה */
+    padding: 8px 0;
+    border-bottom: 1px dashed #e7e7e7;
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+
+  td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-weight: 600;
+    margin-left: 10px;
+    flex: 0 0 auto;
+  }
+
+  .actions {
+    gap: 14px;
+  }
+
+  .actions a {
+    font-size: 22px;
+  }
+
+  .wa-icon {
+    width: 26px;
+    height: 26px;
   }
 }
