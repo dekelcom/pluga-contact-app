@@ -146,7 +146,7 @@ function render() {
             <a href="tel:${tel}" ${tel ? "" : "onclick='return false;'"} title="חיוג">📞</a>
             <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
                class="wa-link" ${wa ? "" : "onclick='return false;'"} title="WhatsApp">
-              <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
+              <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon">
             </a>
             <a href="#" class="vcard" title="שמור איש קשר">👤</a>
           </div>
