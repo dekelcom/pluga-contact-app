@@ -11,72 +11,70 @@ let allData = [];
 let filtered = [];
 
 let sortKey = "lastName";
-let sortDir = "asc"; // asc/desc
+let sortDir = "asc";
 
-const clean = (s) => String(s ?? "")
-  .replace(/[\u200E\u200F\u202A-\u202E]/g, "") // RTL/LTR
-  .trim();
+const clean = (s) =>
+  String(s ?? "")
+    .replace(/[\u200E\u200F\u202A-\u202E]/g, "")
+    .trim();
 
 const cleanLower = (s) => clean(s).toLowerCase();
 
-function uniqSorted(arr){
-  return [...new Set(arr.filter(Boolean))].sort((a,b)=>cleanLower(a).localeCompare(cleanLower(b), "he"));
+function uniqSorted(arr) {
+  return [...new Set(arr.filter(Boolean))].sort((a, b) =>
+    cleanLower(a).localeCompare(cleanLower(b), "he")
+  );
 }
 
-function compare(a,b){
+function compare(a, b) {
   const av = cleanLower(a[sortKey]);
   const bv = cleanLower(b[sortKey]);
   if (av === bv) return 0;
   return (av < bv ? -1 : 1) * (sortDir === "asc" ? 1 : -1);
 }
 
-function applySort(){
-  filtered.sort((a,b)=>{
-    const p = compare(a,b);
+function applySort() {
+  filtered.sort((a, b) => {
+    const p = compare(a, b);
     if (p !== 0) return p;
-    const lnA = cleanLower(a.lastName), lnB = cleanLower(b.lastName);
-    if (lnA !== lnB) return lnA < lnB ? -1 : 1;
-    const fnA = cleanLower(a.firstName), fnB = cleanLower(b.firstName);
-    if (fnA !== fnB) return fnA < fnB ? -1 : 1;
-    return 0;
+    return cleanLower(a.firstName).localeCompare(cleanLower(b.firstName), "he");
   });
 }
 
-function applyFilter(){
+function applyFilter() {
   const p = clean(plugaFilter.value);
   const f = clean(frameworkFilter.value);
   const q = cleanLower(searchBox.value);
 
-  filtered = allData.filter(x=>{
+  filtered = allData.filter((x) => {
     if (p !== "all" && clean(x.pluga) !== p) return false;
     if (f !== "all" && clean(x.framework) !== f) return false;
 
-    if (q){
+    if (q) {
       const hay = [
-        x.firstName,x.lastName,x.role,x.pluga,x.framework,x.mobile,x.mobileE164,x.mobileWA
-      ].map(cleanLower).join(" ");
+        x.firstName,
+        x.lastName,
+        x.role,
+        x.pluga,
+        x.framework,
+        x.mobile,
+      ]
+        .map(cleanLower)
+        .join(" ");
       if (!hay.includes(q)) return false;
     }
     return true;
   });
 
-  // הורדה פעילה רק אם בחרת מסגרת ספציפית ויש תוצאות
-  const canDownload = (p !== "all" && f !== "all" && filtered.length > 0);
-  downloadBtn.disabled = !canDownload;
-
+  downloadBtn.disabled = !(p !== "all" && f !== "all" && filtered.length > 0);
   statusEl.textContent = `מציג ${filtered.length} מתוך ${allData.length}`;
 }
 
-function buildVCard(rec){
+function buildVCard(rec) {
   const first = clean(rec.firstName);
-  const last  = clean(rec.lastName);
-  const fn = (first + " " + last).trim() || "איש קשר";
+  const last = clean(rec.lastName);
+  const fn = `${first} ${last}`.trim();
   const tel = clean(rec.mobileE164);
-
-  const meta = [];
-  if (rec.pluga) meta.push(`פלוגה: ${clean(rec.pluga)}`);
-  if (rec.framework) meta.push(`מסגרת: ${clean(rec.framework)}`);
-  if (rec.role) meta.push(`תפקיד: ${clean(rec.role)}`);
 
   const lines = [
     "BEGIN:VCARD",
@@ -84,14 +82,14 @@ function buildVCard(rec){
     `N:${last};${first};;;`,
     `FN:${fn}`,
   ];
+
   if (tel) lines.push(`TEL;TYPE=cell:${tel}`);
-  if (meta.length) lines.push(`NOTE:${meta.join(" | ")}`);
   lines.push("END:VCARD");
   return lines.join("\n");
 }
 
-function downloadText(text, filename){
-  const blob = new Blob([text], { type:"text/vcard;charset=utf-8" });
+function downloadText(text, filename) {
+  const blob = new Blob([text], { type: "text/vcard;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -102,38 +100,38 @@ function downloadText(text, filename){
   URL.revokeObjectURL(url);
 }
 
-function safeName(s){
-  return clean(s).replace(/[\\/:*?"<>|]/g,"-").replace(/\s+/g,"_").slice(0,120) || "contacts";
+function safeName(s) {
+  return clean(s)
+    .replace(/[\\/:*?"<>|]/g, "-")
+    .replace(/\s+/g, "_")
+    .slice(0, 120);
 }
 
-function render(){
-  if (!filtered.length){
-    tableWrap.innerHTML = `<div style="padding:16px;color:#666;">אין תוצאות לתצוגה.</div>`;
+function render() {
+  if (!filtered.length) {
+    tableWrap.innerHTML = `<div style="padding:16px;color:#666;">אין תוצאות</div>`;
     return;
   }
 
   let html = `
-    <table id="tbl">
+    <table>
       <thead>
         <tr>
           <th data-key="firstName">שם פרטי</th>
           <th data-key="lastName">שם משפחה</th>
           <th data-key="pluga">פלוגה</th>
           <th data-key="framework">מסגרת</th>
-          <th data-key="role">תפקיד בפועל</th>
-          <th data-key="mobile">טלפון נייד</th>
+          <th data-key="role">תפקיד</th>
+          <th data-key="mobile">טלפון</th>
           <th class="noSort">פעולות</th>
         </tr>
       </thead>
       <tbody>
   `;
 
-  for (const r of filtered){
+  for (const r of filtered) {
     const tel = clean(r.mobileE164);
-    const wa  = clean(r.mobileWA);
-
-    const telHref = tel ? `tel:${tel}` : "#";
-    const waHref  = wa  ? `https://wa.me/${wa}` : "#";
+    const wa = clean(r.mobileWA);
 
     html += `
       <tr>
@@ -145,10 +143,11 @@ function render(){
         <td>${clean(r.mobile)}</td>
         <td>
           <div class="actions">
-            <a href="${telHref}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
-            <a href="${waHref}" title="WhatsApp" target="_blank" rel="noopener" ${wa ? "" : "onclick='return false;'"} class="wa-link">
-			<img src="./assets/icons/whatsapp.png" alt="WhatsApp" class="wa-icon" />
-			</a>
+            <a href="tel:${tel}" ${tel ? "" : "onclick='return false;'"} title="חיוג">📞</a>
+            <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
+               class="wa-link" ${wa ? "" : "onclick='return false;'"} title="WhatsApp">
+              <img src="./assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
+            </a>
             <a href="#" class="vcard" title="שמור איש קשר">👤</a>
           </div>
         </td>
@@ -156,112 +155,76 @@ function render(){
     `;
   }
 
-  html += `</tbody></table>`;
+  html += "</tbody></table>";
   tableWrap.innerHTML = html;
 
-  // vCard per row
-  document.querySelectorAll("a.vcard").forEach((el, idx)=>{
-    el.addEventListener("click",(e)=>{
+  document.querySelectorAll(".vcard").forEach((el, i) => {
+    el.addEventListener("click", (e) => {
       e.preventDefault();
-      const rec = filtered[idx];
-      const vcf = buildVCard(rec);
-      const filename = `${safeName(rec.firstName)}_${safeName(rec.lastName)}.vcf`;
-      downloadText(vcf, filename);
+      const vcf = buildVCard(filtered[i]);
+      downloadText(vcf, `${safeName(filtered[i].firstName)}_${safeName(filtered[i].lastName)}.vcf`);
     });
   });
 
-  // sort handlers
-  document.querySelectorAll("th[data-key]").forEach(th=>{
-    th.addEventListener("click", ()=>{
-      const key = th.dataset.key;
-      if (sortKey === key) sortDir = (sortDir === "asc") ? "desc" : "asc";
-      else { sortKey = key; sortDir = "asc"; }
+  document.querySelectorAll("th[data-key]").forEach((th) => {
+    th.onclick = () => {
+      sortKey === th.dataset.key
+        ? (sortDir = sortDir === "asc" ? "desc" : "asc")
+        : ((sortKey = th.dataset.key), (sortDir = "asc"));
       applySort();
       render();
-    });
+    };
   });
 }
 
-function populateFrameworksForPluga(pluga){
-  const p = clean(pluga);
-  if (!p || p === "all"){
-    frameworkFilter.disabled = true;
-    frameworkFilter.innerHTML = `<option value="all">בחר פלוגה קודם</option>`;
-    return;
-  }
-  const frameworks = uniqSorted(allData.filter(x=>clean(x.pluga)===p).map(x=>clean(x.framework)));
-  frameworkFilter.disabled = false;
-  frameworkFilter.innerHTML = `<option value="all">כל המסגרות</option>`;
-  for (const f of frameworks){
-    const opt = document.createElement("option");
-    opt.value = f;
-    opt.textContent = f;
-    frameworkFilter.appendChild(opt);
-  }
-}
-
-downloadBtn.addEventListener("click", ()=>{
-  const p = clean(plugaFilter.value);
-  const f = clean(frameworkFilter.value);
+downloadBtn.onclick = () => {
   const vcf = filtered.map(buildVCard).join("\n");
-  downloadText(vcf, `Pluga_882__${safeName(p)}__${safeName(f)}.vcf`);
-});
+  downloadText(vcf, `Pluga_${safeName(plugaFilter.value)}_${safeName(frameworkFilter.value)}.vcf`);
+};
 
-plugaFilter.addEventListener("change", ()=>{
-  populateFrameworksForPluga(plugaFilter.value);
-  frameworkFilter.value = "all";
+plugaFilter.onchange = () => {
+  frameworkFilter.innerHTML = `<option value="all">כל המסגרות</option>`;
+  uniqSorted(
+    allData.filter((x) => clean(x.pluga) === clean(plugaFilter.value)).map((x) => x.framework)
+  ).forEach((f) => {
+    const o = document.createElement("option");
+    o.value = f;
+    o.textContent = f;
+    frameworkFilter.appendChild(o);
+  });
+  frameworkFilter.disabled = false;
   applyFilter();
   applySort();
   render();
-});
+};
 
-frameworkFilter.addEventListener("change", ()=>{
+frameworkFilter.onchange = searchBox.oninput = () => {
   applyFilter();
   applySort();
   render();
-});
+};
 
-searchBox.addEventListener("input", ()=>{
+(async function init() {
+  const res = await fetch(DATA_URL, { cache: "no-store" });
+  allData = (await res.json()).map((x) => ({
+    firstName: clean(x.firstName),
+    lastName: clean(x.lastName),
+    pluga: clean(x.pluga),
+    framework: clean(x.framework),
+    role: clean(x.role),
+    mobile: clean(x.mobile),
+    mobileE164: clean(x.mobileE164),
+    mobileWA: clean(x.mobileWA),
+  }));
+
+  uniqSorted(allData.map((x) => x.pluga)).forEach((p) => {
+    const o = document.createElement("option");
+    o.value = p;
+    o.textContent = p;
+    plugaFilter.appendChild(o);
+  });
+
   applyFilter();
   applySort();
   render();
-});
-
-(async function init(){
-  try{
-    const res = await fetch(DATA_URL, { cache:"no-store" });
-    if (!res.ok) throw new Error("Failed to load data.json");
-
-    const data = await res.json();
-    allData = (data || []).map(x=>({
-      firstName: clean(x.firstName),
-      lastName: clean(x.lastName),
-      pluga: clean(x.pluga),
-      framework: clean(x.framework),
-      role: clean(x.role),
-      mobile: clean(x.mobile),
-      mobileE164: clean(x.mobileE164),
-      mobileWA: clean(x.mobileWA),
-    }));
-
-    // fill plugot
-    const plugot = uniqSorted(allData.map(x=>x.pluga));
-    for (const p of plugot){
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      plugaFilter.appendChild(opt);
-    }
-
-    populateFrameworksForPluga("all");
-    applyFilter();
-    applySort();
-    render();
-  } catch(e){
-    console.error(e);
-    statusEl.textContent = "שגיאה";
-    tableWrap.innerHTML = `<div style="padding:16px;color:#b00;">
-      שגיאה בטעינת הנתונים. ודא שיש <b>data.json</b> ב-root ושהשם זהה בדיוק (כולל אותיות קטנות/גדולות).
-    </div>`;
-  }
 })();
