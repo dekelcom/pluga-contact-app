@@ -65,22 +65,28 @@ function applySort() {
 function buildVCard(r) {
   const first = clean(r.firstName);
   const last = clean(r.lastName);
-  const fn = `${first} ${last}`.trim();
+  const fn = `${first} ${last}`.trim() || "איש קשר";
   const tel = clean(r.mobileE164);
 
   const lines = [
     "BEGIN:VCARD",
-    "VERSION:4.0",
-    `N:${last};${first};;;`,
-    `FN:${fn}`,
+    "VERSION:3.0",
+    `N;CHARSET=UTF-8:${last};${first};;;`,
+    `FN;CHARSET=UTF-8:${fn}`,
   ];
-  if (tel) lines.push(`TEL;TYPE=cell:${tel}`);
+
+  if (tel) lines.push(`TEL;TYPE=CELL:${tel}`);
+
   lines.push("END:VCARD");
-  return lines.join("\n");
+  return lines.join("\n"); // downloadText כבר יהפוך ל-CRLF
 }
 
+
 function downloadText(text, filename) {
-  const blob = new Blob([text], { type: "text/vcard;charset=utf-8" });
+  // iOS אוהב BOM + CRLF
+  const withBom = "\uFEFF" + text.replace(/\n/g, "\r\n");
+  const blob = new Blob([withBom], { type: "text/vcard;charset=utf-8" });
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -125,26 +131,26 @@ function render() {
     const tel = clean(r.mobileE164);
     const wa = clean(r.mobileWA);
 
-	html += `
-	  <tr>
-		<td data-label="שם פרטי">${clean(r.firstName)}</td>
-		<td data-label="שם משפחה">${clean(r.lastName)}</td>
-		<td data-label="פלוגה">${clean(r.pluga)}</td>
-		<td data-label="מסגרת">${clean(r.framework)}</td>
-		<td data-label="תפקיד">${clean(r.role)}</td>
-		<td data-label="טלפון">${clean(r.mobile)}</td>
-		<td data-label="פעולות">
-		  <div class="actions">
-			<a href="tel:${tel}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
-			<a href="https://wa.me/${wa}" target="_blank" rel="noopener"
-			   class="wa-link" title="WhatsApp" ${wa ? "" : "onclick='return false;'"}">
-			  <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
-			</a>
-			<a href="#" class="vcard" title="שמור איש קשר">👤</a>
-		  </div>
-		</td>
-	  </tr>
-	`;
+html += `
+  <tr>
+    <td data-label="שם פרטי">${clean(r.firstName)}</td>
+    <td data-label="שם משפחה">${clean(r.lastName)}</td>
+    <td data-label="פלוגה">${clean(r.pluga)}</td>
+    <td data-label="מסגרת">${clean(r.framework)}</td>
+    <td data-label="תפקיד">${clean(r.role)}</td>
+    <td data-label="טלפון">${clean(r.mobile)}</td>
+    <td data-label="פעולות">
+      <div class="actions">
+        <a href="tel:${tel}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
+        <a href="https://wa.me/${wa}" target="_blank" rel="noopener"
+           class="wa-link" title="WhatsApp" ${wa ? "" : "onclick='return false;'"}">
+          <img src="/pluga-contact-app/assets/icons/whatsapp.png" class="wa-icon" alt="WhatsApp">
+        </a>
+        <a href="#" class="vcard" title="שמור איש קשר">👤</a>
+      </div>
+    </td>
+  </tr>
+`;
 
   html += "</tbody></table>";
   tableWrap.innerHTML = html;
