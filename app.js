@@ -169,26 +169,45 @@ frameworkFilter.onchange = searchBox.oninput = () => {
 };
 
 (async function init() {
-  const res = await fetch(DATA_URL, { cache: "no-store" });
-  allData = (await res.json()).map((x) => ({
-    firstName: clean(x.firstName),
-    lastName: clean(x.lastName),
-    pluga: clean(x.pluga),
-    framework: clean(x.framework),
-    role: clean(x.role),
-    mobile: clean(x.mobile),
-    mobileE164: clean(x.mobileE164),
-    mobileWA: clean(x.mobileWA),
-  }));
+  try {
+    statusEl.textContent = "טוען נתונים...";
 
-  uniqSorted(allData.map((x) => x.pluga)).forEach((p) => {
-    const o = document.createElement("option");
-    o.value = p;
-    o.textContent = p;
-    plugaFilter.appendChild(o);
-  });
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to load data.json (HTTP ${res.status})`);
 
-  applyFilter();
-  applySort();
-  render();
+    const raw = await res.json();
+    allData = (raw || []).map((x) => ({
+      firstName: clean(x.firstName),
+      lastName: clean(x.lastName),
+      pluga: clean(x.pluga),
+      framework: clean(x.framework),
+      role: clean(x.role),
+      mobile: clean(x.mobile),
+      mobileE164: clean(x.mobileE164),
+      mobileWA: clean(x.mobileWA),
+    }));
+
+    // Plugot list
+    uniqSorted(allData.map((x) => x.pluga)).forEach((p) => {
+      const o = document.createElement("option");
+      o.value = p;
+      o.textContent = p;
+      plugaFilter.appendChild(o);
+    });
+
+    statusEl.textContent = `מציג ${allData.length} מתוך ${allData.length}`;
+    applyFilter();
+    applySort();
+    render();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = "שגיאה";
+    tableWrap.innerHTML = `
+      <div style="padding:16px;color:#b00;">
+        שגיאה בטעינת הנתונים.<br>
+        בדוק ש- <b>data.json</b> נמצא ב-root וששם הקובץ זהה בדיוק.<br>
+        פרטים: <code>${String(e.message || e)}</code>
+      </div>
+    `;
+  }
 })();
