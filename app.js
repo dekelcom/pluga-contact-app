@@ -146,7 +146,9 @@ function render(){
         <td>
           <div class="actions">
             <a href="${telHref}" title="חיוג" ${tel ? "" : "onclick='return false;'"}>📞</a>
-            <a href="${waHref}" title="WhatsApp" target="_blank" rel="noopener" ${wa ? "" : "onclick='return false;'"}>💬</a>
+            <a href="${waHref}" title="WhatsApp" target="_blank" rel="noopener" ${wa ? "" : "onclick='return false;'"} class="wa-link">
+			<img src="./assets/icons/whatsapp.png" alt="WhatsApp" class="wa-icon" />
+			</a>
             <a href="#" class="vcard" title="שמור איש קשר">👤</a>
           </div>
         </td>
